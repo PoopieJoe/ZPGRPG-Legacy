@@ -34,19 +34,19 @@ class Core:
         More text
         """
         # wipe saves folder so it doesn't fill up with garbage
-        for file in [os.path.join(WORLDFOLDER,f) for f in os.listdir(WORLDFOLDER) if os.path.isfile(os.path.join(WORLDFOLDER,f))]:
-            os.remove(file)
+        # for file in [os.path.join(WORLDFOLDER,f) for f in os.listdir(WORLDFOLDER) if os.path.isfile(os.path.join(WORLDFOLDER,f))]:
+        #     os.remove(file)
 
-        world = World.new("bip")
+        # world = World.new("bip")
 
-        mc = MainCharacter.new()
-        world.addEntity(mc,HexCoordinate(0,0))
-        self.saveWorld(world,WORLDFOLDER)
+        # mc = MainCharacter.new()
+        # world.addEntity(mc,HexCoordinate(0,0))
+        # self.saveWorld(world,WORLDFOLDER)
 
 
 
-        # with open("saves/a0de3700-006e-48e4-bd0f-269413afb7a1.world","r") as f:
-        #     world = self.loadWorld(f)
+        with open(f"{WORLDFOLDER}/ef7c74e5-70d9-4f46-9ce9-f5f1b06adbb8.world","r") as f:
+            world = self.loadWorld(f)
         print(world)
         self.active = True
         return
