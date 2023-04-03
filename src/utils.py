@@ -6,6 +6,7 @@ class Point(NamedTuple):
     x:int
     y:int
 
+#TODO: https://www.redblobgames.com/grids/hexagons/
 class HexCoordinate(NamedTuple):
     q:int
     r:int
