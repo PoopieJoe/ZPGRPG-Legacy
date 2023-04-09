@@ -7,6 +7,7 @@ import io
 from src.world import World
 from src.mainCharacter import MainCharacter
 from src.utils import HexCoordinate
+from src.intelligence import PlayerIntelligence
 
 WORLDFOLDER = "saves"
 
@@ -16,9 +17,7 @@ class Core:
     More text
     """
 
-    def __init__(
-        self
-    ):
+    def __init__(self):
         """Constructor
 
         More text
@@ -26,9 +25,7 @@ class Core:
         self.active = False
         return
 
-    def activate(
-        self
-    ):
+    def activate(self):
         """Lauches the game backend systems
 
         More text
@@ -37,31 +34,28 @@ class Core:
         # for file in [os.path.join(WORLDFOLDER,f) for f in os.listdir(WORLDFOLDER) if os.path.isfile(os.path.join(WORLDFOLDER,f))]:
         #     os.remove(file)
 
-        # world = World.new("bip")
+        world = World.new("bip")
 
-        # mc = MainCharacter.new()
-        # world.addEntity(mc,HexCoordinate(0,0))
-        # self.saveWorld(world,WORLDFOLDER)
+        mc = MainCharacter.new()
+        # mainCharacterAI = PlayerIntelligence([],mc)
+        world.addEntity(mc,HexCoordinate(0,0))
+        self.saveWorld(world,WORLDFOLDER)
 
 
 
-        with open(f"{WORLDFOLDER}/ef7c74e5-70d9-4f46-9ce9-f5f1b06adbb8.world","r") as f:
-            world = self.loadWorld(f)
-        print(world)
+        # with open(f"{WORLDFOLDER}/ef7c74e5-70d9-4f46-9ce9-f5f1b06adbb8.world","r") as f:
+        #     world = self.loadWorld(f)
+        # print(world)
         self.active = True
         return
     
-    def saveWorld(
-        self,
-        world:World,
-        savefolder:str
-    ):
+    def saveWorld(self,
+                  world:World,
+                  savefolder:str):
         with open(savefolder + "/" + world.uuid.__str__() + ".world","+w") as f:
             f.write(world.toJSON())
         return
     
-    def loadWorld(
-        self,
-        jsonfile:str|io.TextIOWrapper
-    ):
+    def loadWorld(self,
+                  jsonfile:str|io.TextIOWrapper):
         return World.fromJSON(jsonfile)

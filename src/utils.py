@@ -8,8 +8,8 @@ class Point(NamedTuple):
 
 #TODO: https://www.redblobgames.com/grids/hexagons/
 class HexCoordinate(NamedTuple):
-    q:int
-    r:int
+    q_:int
+    r_:int
 
     @classmethod
     def new(
@@ -22,19 +22,16 @@ class HexCoordinate(NamedTuple):
     def s(
         self
     ):
-        return - self.q - self.r 
+        return - (self.q_ - self.r_)
     
-class Entity:
-    def __init__(
-        self,
-        uuid:str
+    def q(
+        self
     ):
-        self.uuid = uuid
-
-    @classmethod
-    def new(
-        cls
+        return self.q_
+    
+    def r(
+        self
     ):
-        return cls(
-            uuid = uuid.uuid4().__str__()
-        )
+        return self.r_
+    
+    
