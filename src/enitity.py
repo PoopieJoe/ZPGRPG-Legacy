@@ -1,7 +1,7 @@
 import uuid
-from enum import Enum
+from src.utils import Enumerate
 
-class Activity(Enum):
+class Activity(Enumerate):
     idle = 0
     traveling = 1
     gathering_wood = 2

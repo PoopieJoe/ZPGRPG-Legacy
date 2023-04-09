@@ -8,7 +8,8 @@ class MainCharacter(Entity):
     def __init__(self,
                  uuid        :str,
                  position    :HexCoordinate,
-                 activity    :Activity):
+                 activity    :Activity
+                 ):
         """Constructor
 
         More text
@@ -18,18 +19,19 @@ class MainCharacter(Entity):
         self.activity = activity
         return
     
-    # def __str__(self):
-    #     return json.dumps(self,
-    #                       default=lambda o: o.__dict__, 
-    #                       sort_keys=True,
-    #                       indent=4,
-    #                       ensure_ascii=False)
+    def __str__(self):
+        return json.dumps(self,
+                          default=lambda o: o.__dict__, 
+                          sort_keys=True,
+                          indent=4,
+                          ensure_ascii=False)
     
     @classmethod
     def new(cls):
         return cls(uuid=uuid.uuid4().__str__(),
                    position=HexCoordinate.new(0,0),
-                   activity=Activity.idle)
+                   activity=Activity.idle
+                   )
     
     @classmethod
     def fromJSON(cls,
@@ -37,7 +39,8 @@ class MainCharacter(Entity):
         params = json.loads(jsonText)
         return cls(uuid        = params["uuid"],
                    position    = params["position"],
-                   activity    = params["activity"])
+                   activity    = params["activity"]
+                   )
 
     def toJSON(self):
         return self.__str__()

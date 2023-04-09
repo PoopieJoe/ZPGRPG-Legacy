@@ -52,7 +52,9 @@ class Core:
     def saveWorld(self,
                   world:World,
                   savefolder:str):
-        with open(savefolder + "/" + world.uuid.__str__() + ".world","+w") as f:
+        outputFileName = world.uuid.__str__() + ".world"
+        with open(savefolder + "/" + outputFileName,"+w") as f:
+            print(f"Saved world {world.name} to {outputFileName}")
             f.write(world.toJSON())
         return
     

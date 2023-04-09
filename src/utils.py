@@ -1,6 +1,10 @@
+from enum import Enum
 from typing import NamedTuple
 import uuid
 
+class Enumerate(Enum):
+    def __dict__(self):
+        return {i.name: i.value for i in Enumerate}
 
 class Point(NamedTuple):
     x:int
