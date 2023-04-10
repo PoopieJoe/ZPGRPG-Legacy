@@ -1,24 +1,33 @@
-from src.tasks import SuperTask,Task
+
 from src.mainCharacter import MainCharacter
+from src.utils import Action,Actions
 
-class PlayerIntelligence(SuperTask):
-    mainCharacter   : MainCharacter
-    tasks           : list[Task|SuperTask]
+class GOAP:
+    class Planner:
+        entity   : MainCharacter
 
-    def __init__(self, 
-                 tasks          : list[Task|SuperTask],
-                 mainCharacter  : MainCharacter):
-        super().__init__(tasks)
-        self.mainCharacter = mainCharacter
-
-    def nextTask(self):
-        ## sort task list
-        pass
+        def __init__(self, 
+                     entity   : MainCharacter):
+            self.entity = entity
         
-    def taskExecute(self):
-        task = self.first()
-        if task == None:
-            return
-        if task.location != self.mainCharacter.position:
-            print("Moving to new location")
-            
+        def plan(self,
+                 worldstate : dict[str,bool],
+                 goalstate  : dict) -> list:
+            diff = {}
+            for key, value in worldstate.items():
+                if goalstate[key] != value:
+                    diff.update({key:goalstate[key]})
+            print(diff)
+            if diff == {}:
+                print("nothing to do!")
+                return []
+            else:
+                return [Actions.gatherWood]
+
+    goalstate : dict[str,bool] = {}
+    planner : Planner
+
+    def __init__(self,
+                 entity:MainCharacter) -> None:
+        self.planner = GOAP.Planner(entity)
+    

@@ -7,8 +7,10 @@ import json
 import datetime
 import uuid
 
-from src.utils import HexCoordinate
-from src.enitity import Entity
+from typing import Type,TypeVar
+from src.utils import HexCoordinate,Actions
+from src.enitity import Entity,WoodPile
+from src.mainCharacter import MainCharacter
 
 WORLDFOLDER = "../saves"
 
@@ -16,8 +18,8 @@ WORLDFOLDER = "../saves"
 
 class WorldHex:
     def __init__(self,
-                 coordinate      :HexCoordinate,
-                 entities        :dict[str,Entity]):
+                 coordinate     : HexCoordinate,
+                 entities       : dict[str,Entity]):
         """Constructor
 
         More text
@@ -38,12 +40,12 @@ class WorldHex:
                           indent=4,
                           ensure_ascii=False)
     
-    @classmethod
-    def fromJSON(cls,
-                 jsonText:str):
-        params = json.loads(jsonText)
-        return cls(coordinate = params["coordinate"],
-                   entities = params["entities"])
+    # @classmethod
+    # def fromJSON(cls,
+    #              jsonText:str):
+    #     params = json.loads(jsonText)
+    #     return cls(coordinate = params["coordinate"],
+    #                entities = params["entities"])
 
     def toJSON(self):
         self.modificationDate = datetime.datetime.now().isoformat()
@@ -119,7 +121,9 @@ class World:
                  uuid            :str,
                  creationDate    :str,
                  modificationDate:str,
-                 chunks          :dict[str,WorldChunk]):
+                 current_time    :float,
+                 chunks          :dict[str,WorldChunk],
+                 state          : dict[str,bool]):
         """Constructor
 
         More text
@@ -129,6 +133,8 @@ class World:
         self.creationDate = creationDate
         self.modificationDate = modificationDate
         self.chunks = chunks
+        self.current_time = current_time
+        self.state = state
     
     def __str__(self):
         return json.dumps(self,
@@ -142,28 +148,31 @@ class World:
             name : str):
         now = datetime.datetime.now().isoformat()
         
-        return cls(name = name,
-                   uuid = uuid.uuid4().__str__(),
-                   creationDate = now,
-                   modificationDate = now,
-                   chunks = WorldChunk.new().toDictEntry())
+        return cls(name                 = name,
+                   uuid                 = uuid.uuid4().__str__(),
+                   creationDate         = now,
+                   modificationDate     = now,
+                   current_time         = 0,
+                   chunks               = WorldChunk.new().toDictEntry(),
+                   state                = {"has wood":False})
     
     @classmethod
     def fromJSON(cls,
                  jsonfile:str|io.TextIOWrapper):
-        if isinstance(jsonfile,io.TextIOWrapper):
-            text = jsonfile.read()
-        else:
-            text = jsonfile
+        raise NotImplementedError
+    #     if isinstance(jsonfile,io.TextIOWrapper):
+    #         text = jsonfile.read()
+    #     else:
+    #         text = jsonfile
 
-        params = json.loads(text)
-        return cls(
-            name = params["name"],
-            uuid = params["uuid"],
-            creationDate = params["creationDate"],
-            modificationDate = params["modificationDate"],
-            chunks = params["chunks"]
-        )
+    #     params = json.loads(text)
+    #     return cls(
+    #         name = params["name"],
+    #         uuid = params["uuid"],
+    #         creationDate = params["creationDate"],
+    #         modificationDate = params["modificationDate"],
+    #         current_time = params["current_time"],
+    #         chunks = params["chunks"])
 
     def toJSON(self):
         self.modificationDate = datetime.datetime.now().isoformat()
@@ -186,3 +195,32 @@ class World:
                 if cell.coordinate == coordinate:
                     return cell
         raise IndexError
+    
+    def findEntities(self,
+                     entityType : Type) -> list:
+        entities = []
+        for chunk in self.chunks.values():
+            for cell in chunk.hexes:
+                for entity in cell.entities.values():
+                    if isinstance(entity,entityType):
+                        entities.append(entity)
+        return entities
+        
+
+    def tick(self):
+        mc : MainCharacter
+
+        mc = self.findEntities(MainCharacter).pop()
+
+        print(f"\t{self.uuid} <{type(mc)}>")
+        if mc.currentAction == None and mc.actionQueue.__len__():
+            mc.currentAction = mc.actionQueue.pop()
+
+        print(f"\tAction Queue: {mc.actionQueue}")
+        print(f"\tCurrent Action: {mc.currentAction}")
+        if (mc.currentAction == Actions.gatherWood):
+            mccell = self.findHex(mc.position)
+            if any(isinstance(x,WoodPile) for x in mccell.entities.values()):
+                self.state.update({"has wood":True})
+                mc.currentAction = None
+                return

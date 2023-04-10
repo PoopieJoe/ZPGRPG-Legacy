@@ -12,6 +12,11 @@ def main():
     gameUI = gui.UserInterface(gameCore)
     gameUI.launch()
 
+    gameCore.start()
+    
+    while gameCore.active:
+        gameCore.scheduler.run()
+
 if __name__ == "__main__":
     if DEBUGMODE:
         import cProfile
