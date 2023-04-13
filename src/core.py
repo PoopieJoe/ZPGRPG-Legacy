@@ -7,10 +7,13 @@ import io
 # import asyncio
 import sched
 import time
+
+from src.worldActors.playerActor import PlayerActor
 from src.lib.world import World
 from src.lib.character import Character
-from src.lib.entity import WoodPile
 from src.lib.utils import HexCoordinate
+
+from src.worldObjects.resources import WoodPile
 from src.ai.goap import GOAP
 
 WORLDFOLDER = "saves"
@@ -41,6 +44,8 @@ class Core:
         """
 
         self.world = World.new("bip")
+        newchar = Character.new()
+        newactor = PlayerActor(self.world,newchar)
 
         
 
