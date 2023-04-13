@@ -7,11 +7,11 @@ import io
 # import asyncio
 import sched
 import time
-from src.world import World
-from src.mainCharacter import MainCharacter
-from src.enitity import WoodPile
-from src.utils import HexCoordinate
-from src.intelligence import GOAP
+from src.lib.world import World
+from src.lib.character import Character
+from src.lib.entity import WoodPile
+from src.lib.utils import HexCoordinate
+from src.ai.goap import GOAP
 
 WORLDFOLDER = "saves"
 
@@ -42,17 +42,6 @@ class Core:
 
         self.world = World.new("bip")
 
-        mc = MainCharacter.new()
-        self.world.addEntity(mc,HexCoordinate(0,0))
-
-        woodpile_1 = WoodPile.new()
-        self.world.addEntity(woodpile_1,HexCoordinate(0,0))
-
-        self.playerIntelligence = GOAP(mc)
-        self.playerIntelligence.goalstate.update({"has wood":True})
-        plan = self.playerIntelligence.planner.plan(self.world.state,
-                                                    self.playerIntelligence.goalstate)
-        mc.actionQueue.extend(plan)
         
 
 
