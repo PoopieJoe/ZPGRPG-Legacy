@@ -45,7 +45,8 @@ class Core:
 
         self.world = World.new("bip")
         newchar = Character.new()
-        newactor = PlayerActor(self.world,newchar)
+        newactor = PlayerActor.new(self.world,newchar)
+        self.world.addActor(newactor)
 
         
 

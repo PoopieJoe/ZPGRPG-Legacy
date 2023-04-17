@@ -2,9 +2,7 @@ from __future__ import annotations
 from typing import Type,TypeVar,Any
 from abc import ABC, abstractmethod
 
-from src.lib.entity import Entity
-from src.lib.world import World
-from src.lib.mainCharacter import Character
+import src.lib as lib
 
 
 ### https://github.com/sploreg/goap (goap/Assets/Standard Assets/Scripts/AI)
@@ -24,10 +22,10 @@ class GOAP:
 
         planner             : GOAP.Planner
 
-        world               : World
+        world               : lib.world.World
 
         def start(self,
-                  world     : World):
+                  world     : lib.world.World):
             self.world = world
             self.statemachine = GOAP.FSM()
             self.availableActions = []
@@ -61,7 +59,7 @@ class GOAP:
         
         def createStates(self):
             class IdleState(GOAP.FSM.State):
-                def update(self, fsm: GOAP.FSM, world: World):
+                def update(self, fsm: GOAP.FSM, world: lib.world.World):
                     return super().update(fsm, world)
             raise NotImplementedError
         
@@ -77,7 +75,7 @@ class GOAP:
         _inRange : bool = False
 
         cost : float = 1
-        target : Entity | None = None
+        target : lib.entity.Entity | None = None
 
         def planReset(self):
             self._inRange = False
@@ -93,11 +91,11 @@ class GOAP:
             pass
 
         @abstractmethod
-        def checkProceduralPreconditions(self, worldObject : World, actor : Character) -> bool:
+        def checkProceduralPreconditions(self, worldObject : lib.world.World, actor : lib.character.Character) -> bool:
             pass
 
         @abstractmethod
-        def perform(self, worldObject : World) -> bool:
+        def perform(self, worldObject : lib.world.World) -> bool:
             pass
 
         @property
@@ -159,9 +157,9 @@ class GOAP:
                 self.action = action
 
         def plan(self,
-                 agent              : Character,
+                 agent              : lib.character.Character,
                  availableActions   : list[GOAP.Action],
-                 world              : World,
+                 world              : lib.world.World,
                  worldState         : dict[str,bool],
                  goalState          : dict[str,bool]) -> list[GOAP.Action]:
             
@@ -255,13 +253,13 @@ class GOAP:
             @abstractmethod
             def update(self,
                     fsm      : GOAP.FSM,
-                    world    : World):
+                    world    : lib.world.World):
                 pass
 
         stateStack : list[State]
 
         def update(self,
-                world    : World):
+                world    : lib.world.World):
             self.stateStack[-1].update(self,world)
 
         def push(self,
