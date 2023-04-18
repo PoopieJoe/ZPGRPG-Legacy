@@ -10,6 +10,7 @@ import uuid
 
 from typing import Type,TypeVar,Any
 import src.lib as lib
+from src.lib.map import CHUNKSIZE
 
 WORLDFOLDER = "../../saves"
 
@@ -61,7 +62,7 @@ class World:
                    creationDate         = now,
                    modificationDate     = now,
                    current_time         = 0,
-                   chunks               = lib.map.WorldChunk.new().toDictEntry(),
+                   chunks               = lib.map.WorldChunk.new((0,0,0)).toDictEntry(),
                    entities             = {},
                    actors               = {},
                    state                = {"has wood":False})
@@ -89,7 +90,7 @@ class World:
         return self.__str__()
     
     def generateBase(self):
-        base = lib.map.WorldChunk.new()
+        base = lib.map.WorldChunk.new((0,0,0))
         self.chunks.update({base.uuid:base})
 
 
@@ -99,7 +100,7 @@ class World:
 
     def addEntity(self,
                   entity        : lib.entity.Entity,
-                  coordinate    : lib.utils.HexCoordinate | None = None):
+                  coordinate    : lib.utils.Point | None = None):
         if coordinate:
             entity.position = coordinate
         self.entities.update(entity.toDict())
@@ -109,13 +110,15 @@ class World:
         self.actors.update
         
 
-    def findHex(self,
-                coordinate:lib.utils.HexCoordinate) -> lib.map.WorldHex: 
+    def findChunk(  self,
+                    coordinate      : lib.utils.Point,
+                    createOnError   : bool = False) -> lib.map.WorldChunk: 
         for chunk in self.chunks.values():
-            for cell in chunk.hexes:
-                if cell.coordinate == coordinate:
-                    return cell
-        raise IndexError
+            if chunk.inChunk(coordinate):
+                return chunk
+        if not createOnError:
+            raise IndexError
+        return lib.map.WorldChunk.new(lib.utils.Point( int(coordinate.x/CHUNKSIZE), int(coordinate.y/CHUNKSIZE), int(coordinate.z/CHUNKSIZE)))
     
     TEntity = TypeVar("TEntity", bound=lib.entity.Entity)
 

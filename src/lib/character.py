@@ -3,17 +3,17 @@ import json
 from typing import Type
 import src.lib as lib
 
-class Character(lib.entity.Movable):
+class Character(lib.entity.Mutable):
     def __init__(self,
                  uuid           : str,
-                 position       : lib.utils.HexCoordinate,
+                 position       : lib.utils.Point | tuple[float,float,float],
                  properties     : list,
                  speed          : int):
         """Constructor
 
         More text
         """
-        lib.entity.Movable.__init__(self,
+        lib.entity.Mutable.__init__(self,
                                     uuid,
                                     properties,
                                     position,
@@ -32,9 +32,10 @@ class Character(lib.entity.Movable):
     #                       ensure_ascii=False)
     
     @classmethod
-    def new(cls):
+    def new(cls,
+            position    : lib.utils.Point | tuple[float,float,float]):
         return cls(uuid             = uuid.uuid4().__str__(),
-                   position         = lib.utils.HexCoordinate.new(0,0),
+                   position         = position,
                    properties       = [],
                    speed            = 1)
     

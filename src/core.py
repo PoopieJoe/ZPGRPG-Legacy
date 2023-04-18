@@ -9,9 +9,7 @@ import sched
 import time
 
 from src.worldActors.playerActor import PlayerActor
-from src.lib.world import World
-from src.lib.character import Character
-from src.lib.utils import HexCoordinate
+import src.lib as lib
 
 from src.worldObjects.resources import WoodPile
 from src.ai.goap import GOAP
@@ -43,8 +41,9 @@ class Core:
         More text
         """
 
-        self.world = World.new("bip")
-        newchar = Character.new()
+        self.world = lib.world.World.new("bip")
+        newchar = lib.character.Character.new((0,0,0))
+        self.world.addEntity(newchar)
         newactor = PlayerActor.new(self.world,newchar)
         self.world.addActor(newactor)
 
@@ -83,7 +82,7 @@ class Core:
         self._scheduler.run()
 
     def saveWorld(self,
-                  world:World,
+                  world:lib.world.World,
                   savefolder:str):
         outputFileName = world.uuid.__str__() + ".world"
         with open(savefolder + "/" + outputFileName,"+w") as f:
@@ -93,7 +92,7 @@ class Core:
     
     def loadWorld(self,
                   jsonfile:str|io.TextIOWrapper):
-        return World.fromJSON(jsonfile)
+        return lib.world.World.fromJSON(jsonfile)
     
     def tick(self,
              dt  : float):

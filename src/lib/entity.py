@@ -1,19 +1,18 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from src.lib.utils import Enumerate,HexCoordinate
-from src.lib.actors import Actor
+import src.lib as lib
 
 class Entity(ABC):
     """Base Entity class all entities inherit from"""
     uuid           : str
     properties     : list
-    position       : HexCoordinate
+    position       : lib.utils.Point
 
     def __init__(self,
                  uuid           : str,
                  properties     : list,
-                 position       : HexCoordinate):
+                 position       : lib.utils.Point):
         self.uuid = uuid
         self.properties = properties
         self.position = position
@@ -31,8 +30,8 @@ class Entity(ABC):
     #                properties   = [],
     #                position     = HexCoordinate(0,0))
     
-class Movable(Entity,ABC):
-    actor   : Actor | None
+class Mutable(Entity,ABC):
+    actor   : lib.actors.Actor | None
     speed   : int
     canWalk : bool
     canFly  : bool
@@ -41,12 +40,14 @@ class Movable(Entity,ABC):
     def __init__(self, 
                  uuid       : str, 
                  properties : list, 
-                 position   : HexCoordinate, 
+                 position   : lib.utils.Point | tuple[float,float,float], 
                  speed      : int,
                  canWalk    : bool = True,
                  canFly     : bool = False,
                  canSwim    : bool = False,
-                 actor      : Actor | None = None,):
+                 actor      : lib.actors.Actor | None = None,):
+        if isinstance(position,tuple):
+            position = lib.utils.Point(position[0],position[1],position[2])
         super().__init__(uuid, 
                          properties, 
                          position,)
@@ -64,5 +65,5 @@ class Movable(Entity,ABC):
     def needsActor(self):
         return False
         
-class Immovable(Entity,ABC):
+class Immutable(Entity,ABC):
     pass
