@@ -33,8 +33,8 @@ class Core:
         More text
         """
         self.active = False
-        self.paused = True
-        self.scheduler = sched.scheduler(time.time,time.sleep)
+        self._paused = True
+        self._scheduler = sched.scheduler(time.time,time.sleep)
         return
 
     def activate(self):
@@ -63,11 +63,25 @@ class Core:
 
         
         self.active = True
-        self.paused = True
+        self._paused = True
         self.t_prev = time.time()
         self.scheduleNextTick()
         return
     
+    @property
+    def paused(self):
+        return self._paused
+    
+    def start(self):
+        assert(self.active)
+        self._paused = False
+
+    def pause(self):
+        self._paused = True
+
+    def run(self):
+        self._scheduler.run()
+
     def saveWorld(self,
                   world:World,
                   savefolder:str):
@@ -92,20 +106,14 @@ class Core:
         
     def scheduleNextTick(self):
         t = time.time()
-        if (not self.paused):
+        if (not self._paused):
             self.tick(t - self.t_prev)
 
-        if (self.scheduler.empty()):
-            self.scheduler.enter(   TICKTIME - (t % TICKTIME),
+        if (self._scheduler.empty()):
+            self._scheduler.enter(   TICKTIME - (t % TICKTIME),
                                     1,
                                     self.scheduleNextTick)
             
         self.t_prev = t
             
 
-    def start(self):
-        assert(self.active)
-        self.paused = False
-
-    def pause(self):
-        self.paused = True

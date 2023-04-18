@@ -15,7 +15,7 @@ def main():
     gameCore.start()
     
     while gameCore.active:
-        gameCore.scheduler.run()
+        gameCore.run()
 
 if __name__ == "__main__":
     if DEBUGMODE:
