@@ -9,6 +9,7 @@ class Actor(ABC):
     _entity : lib.entity.Mutable
     world   : lib.world.World
 
+
     def __init__(self,
                  uuid       : str,
                  world      : lib.world.World,
@@ -30,7 +31,8 @@ class Actor(ABC):
         self._entity.actor = self
 
     @abstractmethod
-    def onTick(self) -> None:
+    def onTick(self,
+               dt   : float) -> None:
         raise NotImplementedError
     
     def toDict(self) -> dict[str,Actor]:

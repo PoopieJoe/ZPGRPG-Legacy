@@ -100,25 +100,35 @@ class World:
 
     def addEntity(self,
                   entity        : lib.entity.Entity,
-                  coordinate    : lib.utils.Point | None = None):
+                  coordinate    : lib.utils.Vector3D | None = None):
         if coordinate:
             entity.position = coordinate
         self.entities.update(entity.toDict())
 
+    def removeEntity(self,
+                     entity     : lib.entity.Entity | str,):
+        if isinstance(entity,lib.entity.Entity):
+            self.entities.pop(entity.uuid)
+        else:
+            self.entities.pop(entity)
+        
+
     def addActor(self,
                  actor          : lib.actors.Actor):
-        self.actors.update
+        if actor.entity.uuid not in self.entities:
+            raise ValueError("Associated entitiy not in world")
+        self.actors.update(actor.toDict())
         
 
     def findChunk(  self,
-                    coordinate      : lib.utils.Point,
+                    coordinate      : lib.utils.Vector3D,
                     createOnError   : bool = False) -> lib.map.WorldChunk: 
         for chunk in self.chunks.values():
             if chunk.inChunk(coordinate):
                 return chunk
         if not createOnError:
             raise IndexError
-        return lib.map.WorldChunk.new(lib.utils.Point( int(coordinate.x/CHUNKSIZE), int(coordinate.y/CHUNKSIZE), int(coordinate.z/CHUNKSIZE)))
+        return lib.map.WorldChunk.new(lib.utils.Vector3D( int(coordinate.x/CHUNKSIZE), int(coordinate.y/CHUNKSIZE), int(coordinate.z/CHUNKSIZE)))
     
     TEntity = TypeVar("TEntity", bound=lib.entity.Entity)
 
@@ -126,7 +136,7 @@ class World:
                      entityType : Type[TEntity]) -> list[TEntity]:
         e = []
         for entity in self.entities.values():
-            if isinstance(entity,type(entityType)):
+            if type(entity) == entityType:
                 e.append(entity)
         return e
     
@@ -145,6 +155,9 @@ class World:
         return closest
         
 
-    def tick(self):
+    def tick(self,
+             dt : float):
+        for actor in self.actors.values():
+            actor.onTick(dt)
         pass
 

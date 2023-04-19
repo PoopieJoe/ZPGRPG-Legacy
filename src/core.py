@@ -16,7 +16,7 @@ from src.ai.goap import GOAP
 
 WORLDFOLDER = "saves"
 
-TICKRATE = 1
+TICKRATE = 128
 TICKTIME = 1/TICKRATE
 
 class Core:
@@ -43,8 +43,11 @@ class Core:
 
         self.world = lib.world.World.new("bip")
         newchar = lib.character.Character.new((0,0,0))
+        newchar.speed = 1
         self.world.addEntity(newchar)
         newactor = PlayerActor.new(self.world,newchar)
+        newactor.facingDirection = lib.utils.Vector3D(1,0,0)
+        newactor.state = PlayerActor.States.moveTo
         self.world.addActor(newactor)
 
         
@@ -100,7 +103,8 @@ class Core:
         self.world.current_time = self.world.current_time + dt
         print("-----------------------------------------------------------------------------------------")
         print(f"time: {self.world.current_time},\t dt:{dt}")
-        self.world.tick()
+        print(f"Entities: {self.world.findEntities(lib.character.Character)[0].position}")
+        self.world.tick(dt)
         pass
         
     def scheduleNextTick(self):

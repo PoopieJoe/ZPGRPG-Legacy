@@ -10,7 +10,7 @@ CHUNKSIZE = 100
 class WorldChunk:
     def __init__(self,
                  uuid               : str,
-                 coordinate         : lib.utils.Point,
+                 coordinate         : lib.utils.Vector3D,
                  creationDate       : str,
                  modificationDate   : str,
                  entities           : dict[str,lib.entity.Entity]):
@@ -34,10 +34,10 @@ class WorldChunk:
     @classmethod
     def new(
         cls,
-        coordinate  : lib.utils.Point | tuple[int,int,int]):
+        coordinate  : lib.utils.Vector3D | tuple[int,int,int]):
         now = datetime.datetime.now().isoformat()
         if isinstance(coordinate,tuple):
-            coordinate = lib.utils.Point(coordinate[0],coordinate[1],coordinate[2])
+            coordinate = lib.utils.Vector3D(coordinate[0],coordinate[1],coordinate[2])
         return cls(uuid = uuid.uuid4().__str__(),
                    coordinate = coordinate,
                    creationDate = now,
@@ -62,5 +62,5 @@ class WorldChunk:
         return {self.uuid:self}
 
     def inChunk(self,
-                coordinate  : lib.utils.Point) -> bool:
+                coordinate  : lib.utils.Vector3D) -> bool:
         return (coordinate.x >= self.coordinate.x) and (coordinate.x < self.coordinate.x + CHUNKSIZE) and (coordinate.y >= self.coordinate.y) and (coordinate.y < self.coordinate.y + CHUNKSIZE) 

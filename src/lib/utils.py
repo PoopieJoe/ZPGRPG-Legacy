@@ -1,27 +1,62 @@
 from __future__ import annotations
+from abc import ABC, abstractmethod
 from enum import Enum
-from typing import NamedTuple,Callable,Iterable
+from typing import NamedTuple,Callable,Iterable,Any,Literal,TypeVar
 import math
 
 class Enumerate(Enum):
     def __dict__(self):
         return {i.name: i.value for i in Enumerate}
 
-class Point(NamedTuple):        
+
+class Vector3D(NamedTuple):        
     x:float
     y:float
     z:float
     
-    def subtract(self,
-                  other : Point) -> Point:
-        return Point(other.x-self.x,other.y-self.y,other.z-self.z)
+    
+    def __neg__(self):
+        return Vector3D(-self.x,
+                        -self.y,
+                        -self.z)
+
+    def __sub__(self,
+                other : Vector3D) -> Vector3D:
+        return Vector3D(other.x-self.x,
+                        other.y-self.y,
+                        other.z-self.z)
+    
+    def __mul__(self,
+                scalar : float) -> Vector3D:
+        return Vector3D(scalar*self.x,
+                       scalar*self.y,
+                       scalar*self.z)
+    
+    def __add__(self,
+                other : Vector3D) -> Vector3D:
+        return Vector3D(other.x+self.x,
+                        other.y+self.y,
+                        other.z+self.z) 
     
     def distanceFrom(self,
-                      other : Point) -> float:
+                      other : Vector3D) -> float:
         """The Euclidian distance between any two [Point]s"""
-        diff = self.subtract(other)
-        return math.sqrt(diff.x*diff.x + diff.y*diff.y + diff.z*diff.z)
+        diff = self.__sub__(other)
+        return math.sqrt(diff.x*diff.x + 
+                         diff.y*diff.y + 
+                         diff.z*diff.z)
 
+class FSM(ABC):
+
+    class FSMStates(Enum):
+        pass
+
+    state   : FSMStates
+
+    @abstractmethod
+    def updateFSM(self):
+        raise NotImplementedError
+    
 
 #TODO: https://www.redblobgames.com/grids/hexagons/
 # class HexCoordinate(NamedTuple):

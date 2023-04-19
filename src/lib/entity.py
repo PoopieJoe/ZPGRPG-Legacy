@@ -7,12 +7,12 @@ class Entity(ABC):
     """Base Entity class all entities inherit from"""
     uuid           : str
     properties     : list
-    position       : lib.utils.Point
+    position       : lib.utils.Vector3D
 
     def __init__(self,
                  uuid           : str,
                  properties     : list,
-                 position       : lib.utils.Point):
+                 position       : lib.utils.Vector3D):
         self.uuid = uuid
         self.properties = properties
         self.position = position
@@ -32,7 +32,7 @@ class Entity(ABC):
     
 class Mutable(Entity,ABC):
     actor   : lib.actors.Actor | None
-    speed   : int
+    speed   : float
     canWalk : bool
     canFly  : bool
     canSwim : bool
@@ -40,14 +40,14 @@ class Mutable(Entity,ABC):
     def __init__(self, 
                  uuid       : str, 
                  properties : list, 
-                 position   : lib.utils.Point | tuple[float,float,float], 
-                 speed      : int,
+                 position   : lib.utils.Vector3D | tuple[float,float,float], 
+                 speed      : float,
                  canWalk    : bool = True,
                  canFly     : bool = False,
                  canSwim    : bool = False,
                  actor      : lib.actors.Actor | None = None,):
         if isinstance(position,tuple):
-            position = lib.utils.Point(position[0],position[1],position[2])
+            position = lib.utils.Vector3D(position[0],position[1],position[2])
         super().__init__(uuid, 
                          properties, 
                          position,)
@@ -64,6 +64,10 @@ class Mutable(Entity,ABC):
     @property
     def needsActor(self):
         return False
+    
+    def transpose(self,
+                  vector  : lib.utils.Vector3D,):
+        self.position = self.position + vector
         
 class Immutable(Entity,ABC):
     pass

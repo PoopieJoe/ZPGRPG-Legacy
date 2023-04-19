@@ -8,7 +8,7 @@ class WoodPile(lib.entity.Immutable):
     def __init__(self,
                  uuid           : str,
                  properties     : list,
-                 position       : lib.utils.Point,
+                 position       : lib.utils.Vector3D,
                  inventory      : lib.item.Inventory):
         lib.entity.Immutable.__init__(self,
                         uuid,
@@ -18,7 +18,7 @@ class WoodPile(lib.entity.Immutable):
 
     @classmethod
     def new(cls,
-            position    : lib.utils.Point):
+            position    : lib.utils.Vector3D):
         return cls(uuid         = uuid.uuid4().__str__(),
                    properties   = ["is_wood"],
                    position     = position,
