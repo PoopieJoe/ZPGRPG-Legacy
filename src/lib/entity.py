@@ -40,7 +40,7 @@ class Mutable(Entity,ABC):
     def __init__(self, 
                  uuid       : str, 
                  properties : list, 
-                 position   : lib.Vector3D | tuple[float,float], 
+                 position   : lib.Vector3D | tuple[float,float,float], 
                  speed      : float,
                  canWalk    : bool = True,
                  canFly     : bool = False,
