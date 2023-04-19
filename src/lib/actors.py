@@ -6,26 +6,26 @@ import src.lib as lib
 
 class Actor(ABC):
     uuid    : str
-    _entity : lib.entity.Mutable
-    world   : lib.world.World
+    _entity : lib.Mutable
+    world   : lib.World
 
 
     def __init__(self,
                  uuid       : str,
-                 world      : lib.world.World,
-                 entity     : lib.entity.Mutable) -> None:
+                 world      : lib.World,
+                 entity     : lib.Mutable) -> None:
         self.world = world
         self.entity = entity
         self.uuid = uuid
         pass
 
     @property
-    def entity(self) -> lib.entity.Mutable:
+    def entity(self) -> lib.Mutable:
         return self._entity
 
     @entity.setter
     def entity(self,
-               e  : lib.entity.Mutable) -> None:
+               e  : lib.Mutable) -> None:
         assert(not e.hasActor)
         self._entity = e
         self._entity.actor = self

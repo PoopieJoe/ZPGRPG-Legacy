@@ -43,7 +43,7 @@ class Core:
 
         self.world = lib.world.World.new("bip")
         newchar = lib.character.Character.new((0,0,0))
-        newchar.speed = 1
+        newchar.speed = 10
         self.world.addEntity(newchar)
         newactor = PlayerActor.new(self.world,newchar)
         newactor.facingDirection = lib.utils.Vector3D(1,0,0)

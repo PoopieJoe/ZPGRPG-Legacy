@@ -3,21 +3,21 @@ import enum
 import src.lib as lib
 
 
-class PlayerActor(lib.actors.Actor,lib.utils.FSM):
-    class States(lib.utils.FSM.FSMStates):
+class PlayerActor(lib.Actor,lib.FSM):
+    class States(lib.FSM.FSMStates):
         idle = enum.auto(),
         moveTo = enum.auto(),
         performAction = enum.auto()
 
     def __init__(self, 
                  uuid   : str,
-                 world  : lib.world.World, 
-                 entity : lib.character.Character) -> None:
+                 world  : lib.World, 
+                 entity : lib.Character) -> None:
         super().__init__(uuid, world, entity)
         self.state = PlayerActor.States.idle
 
-    target          : lib.entity.Entity | lib.utils.Vector3D | None
-    facingDirection : lib.utils.Vector3D
+    target          : lib.Entity | lib.Vector3D | None
+    facingDirection : lib.Vector3D
 
     def updateFSM(self):
         if self.state == PlayerActor.States.idle:

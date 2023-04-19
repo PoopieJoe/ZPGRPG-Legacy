@@ -10,7 +10,6 @@ import uuid
 
 from typing import Type,TypeVar,Any
 import src.lib as lib
-from src.lib.map import CHUNKSIZE
 
 WORLDFOLDER = "../../saves"
 
@@ -27,9 +26,9 @@ class World:
                  creationDate       : str,
                  modificationDate   : str,
                  current_time       : float,
-                 chunks             : dict[str,lib.map.WorldChunk],
-                 entities           : dict[str,lib.entity.Entity],
-                 actors             : dict[str,lib.actors.Actor],
+                 chunks             : dict[str,lib.WorldChunk],
+                 entities           : dict[str,lib.Entity],
+                 actors             : dict[str,lib.Actor],
                  state              : dict[str,bool]):
         """Constructor
 
@@ -90,7 +89,7 @@ class World:
         return self.__str__()
     
     def generateBase(self):
-        base = lib.map.WorldChunk.new((0,0,0))
+        base = lib.WorldChunk.new((0,0,0))
         self.chunks.update({base.uuid:base})
 
 
@@ -99,36 +98,36 @@ class World:
         raise NotImplementedError
 
     def addEntity(self,
-                  entity        : lib.entity.Entity,
-                  coordinate    : lib.utils.Vector3D | None = None):
+                  entity        : lib.Entity,
+                  coordinate    : lib.Vector3D | None = None):
         if coordinate:
             entity.position = coordinate
         self.entities.update(entity.toDict())
 
     def removeEntity(self,
-                     entity     : lib.entity.Entity | str,):
-        if isinstance(entity,lib.entity.Entity):
+                     entity     : lib.Entity | str,):
+        if isinstance(entity,lib.Entity):
             self.entities.pop(entity.uuid)
         else:
             self.entities.pop(entity)
         
 
     def addActor(self,
-                 actor          : lib.actors.Actor):
+                 actor          : lib.Actor):
         if actor.entity.uuid not in self.entities:
             raise ValueError("Associated entitiy not in world")
         self.actors.update(actor.toDict())
         
 
     def findChunk(  self,
-                    coordinate      : lib.utils.Vector3D,
-                    createOnError   : bool = False) -> lib.map.WorldChunk: 
+                    coordinate      : lib.Vector3D,
+                    createOnError   : bool = False) -> lib.WorldChunk: 
         for chunk in self.chunks.values():
             if chunk.inChunk(coordinate):
                 return chunk
         if not createOnError:
             raise IndexError
-        return lib.map.WorldChunk.new(lib.utils.Vector3D( int(coordinate.x/CHUNKSIZE), int(coordinate.y/CHUNKSIZE), int(coordinate.z/CHUNKSIZE)))
+        return lib.WorldChunk.new(lib.Vector3D( int(coordinate.x/lib.CHUNKSIZE), int(coordinate.y/lib.CHUNKSIZE), int(coordinate.z/lib.CHUNKSIZE)))
     
     TEntity = TypeVar("TEntity", bound=lib.entity.Entity)
 
@@ -141,7 +140,7 @@ class World:
         return e
     
     def findClosest(self,
-                    sourceEntity : lib.entity.Entity,
+                    sourceEntity : lib.Entity,
                     entityType : Type[TEntity]) -> TEntity | None:
         foundEntities = self.findEntities(entityType)
 

@@ -3,10 +3,10 @@ import json
 from typing import Type
 import src.lib as lib
 
-class Character(lib.entity.Mutable):
+class Character(lib.Mutable):
     def __init__(self,
                  uuid           : str,
-                 position       : lib.utils.Vector3D | tuple[float,float,float],
+                 position       : lib.Vector3D | tuple[float,float,float],
                  properties     : list,
                  speed          : int):
         """Constructor
@@ -33,7 +33,7 @@ class Character(lib.entity.Mutable):
     
     @classmethod
     def new(cls,
-            position    : lib.utils.Vector3D | tuple[float,float,float]):
+            position    : lib.Vector3D | tuple[float,float,float]):
         return cls(uuid             = uuid.uuid4().__str__(),
                    position         = position,
                    properties       = [],
