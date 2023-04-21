@@ -16,7 +16,7 @@ from src.ai.goap import GOAP
 
 WORLDFOLDER = "saves"
 
-TICKRATE = 128
+TICKRATE = 10
 TICKTIME = 1/TICKRATE
 
 class Core:
@@ -65,7 +65,7 @@ class Core:
 
         
         self.active = True
-        self._paused = True
+        self._paused = False
         self.t_prev = time.time()
         self.scheduleNextTick()
         return
@@ -74,7 +74,7 @@ class Core:
     def paused(self):
         return self._paused
     
-    def start(self):
+    def unpause(self):
         assert(self.active)
         self._paused = False
 
@@ -82,7 +82,8 @@ class Core:
         self._paused = True
 
     def run(self):
-        self._scheduler.run()
+        while self.active:
+            self._scheduler.run()
 
     def saveWorld(self,
                   world:lib.world.World,

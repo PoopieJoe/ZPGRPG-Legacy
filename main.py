@@ -1,5 +1,7 @@
 import sys
 
+
+
 import src.core as core
 import src.ui.interface as gui
 
@@ -11,11 +13,8 @@ def main():
 
     gameUI = gui.UserInterface(gameCore)
     gameUI.launch()
-
-    gameCore.start()
     
-    while gameCore.active:
-        gameCore.run()
+    gameCore.run()
 
 if __name__ == "__main__":
     if DEBUGMODE:

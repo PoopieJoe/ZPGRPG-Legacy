@@ -13,7 +13,6 @@ import src.lib as lib
 
 WORLDFOLDER = "../../saves"
 
-# TODO move to higher layer?
 class World:
     """Container for a world
 
