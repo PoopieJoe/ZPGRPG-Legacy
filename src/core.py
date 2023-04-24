@@ -8,18 +8,18 @@ import io
 import sched
 import time
 
+from direct.showbase.ShowBase import ShowBase
+import panda3d.core as pdc
+
 from src.worldActors.playerActor import PlayerActor
 import src.lib as lib
-
-from src.worldObjects.resources import WoodPile
-from src.ai.goap import GOAP
 
 WORLDFOLDER = "saves"
 
 TICKRATE = 10
 TICKTIME = 1/TICKRATE
 
-class Core:
+class Core(ShowBase):
     """Class describing the core runner of the game
     
     More text
@@ -30,6 +30,7 @@ class Core:
 
         More text
         """
+        ShowBase.__init__(self)
         self.active = False
         self._paused = True
         self._scheduler = sched.scheduler(time.time,time.sleep)
@@ -86,7 +87,7 @@ class Core:
             self._scheduler.run()
 
     def saveWorld(self,
-                  world:lib.world.World,
+                  world : lib.world.World,
                   savefolder:str):
         outputFileName = world.uuid.__str__() + ".world"
         with open(savefolder + "/" + outputFileName,"+w") as f:
@@ -95,11 +96,13 @@ class Core:
         return
     
     def loadWorld(self,
-                  jsonfile:str|io.TextIOWrapper):
+                  jsonfile : str|io.TextIOWrapper):
         return lib.world.World.fromJSON(jsonfile)
     
     def tick(self,
              dt  : float):
+        self.taskMgr.step()
+
         #update logic
         self.world.current_time = self.world.current_time + dt
         print("-----------------------------------------------------------------------------------------")

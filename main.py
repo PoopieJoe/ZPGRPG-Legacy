@@ -11,8 +11,8 @@ def main():
     gameCore = core.Core()
     gameCore.activate()
 
-    gameUI = gui.UserInterface(gameCore)
-    gameUI.launch()
+    # gameUI = gui.UserInterface(gameCore)
+    # gameUI.launch()
     
     gameCore.run()
 
